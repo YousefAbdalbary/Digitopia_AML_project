@@ -7,6 +7,8 @@
 ![PyTorch Geometric](https://img.shields.io/badge/PyTorch-Geometric-red)
 ![Digitopia Competition](https://img.shields.io/badge/Digitopia-Competition-orange)
 
+![Project Logo](logo.jpg)
+
 *Advanced Anti-Money Laundering detection system using Graph Attention Networks and AI-powered analytics*
 
 </div>
@@ -20,6 +22,8 @@
 - [🏗️ Project Structure](#project-structure)
 - [🛠️ Technologies Used](#technologies-used)
 - [🧠 Model Details](#model-details)
+- [📊 Performance Metrics](#performance-metrics)
+- [💼 Business Model](#business-model)
 - [📊 API Endpoints](#api-endpoints)
 - [🤝 Contributing](#contributing)
 - [📄 License](#license)
@@ -41,29 +45,14 @@ This project implements a comprehensive **Anti-Money Laundering (AML) detection 
 
 <div align="center">
 
-### System Architecture Diagram
-![System Architecture](assets/architecture.png)
-
-### Component Architecture
-![System Architecture](https://example.com/architecture-diagram.png)
+### System Workflow Diagram
+![System Flowchart](flowshart.jpg)
 
 </div>
 
 ### 🏛️ Architecture Overview
 
 The system follows a modular microservices architecture:
-
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   Flask API      │    │   AI Models     │
-│   Dashboard     │◄──►│   Gateway        │◄──►│   (GAT, ML)     │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-                              │                         │
-                              ▼                         ▼
-┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
-│   Data          │    │   Analytics      │    │   Storage       │
-│   Processor     │    │   Engine         │    │   (MongoDB)     │
-└─────────────────┘    └──────────────────┘    └─────────────────┘
-```
 
 ## ⚡ Quick Start
 
