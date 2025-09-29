@@ -15,7 +15,7 @@
 
 ## 📋 Table of Contents
 - [🌟 Overview](#overview)
-- [🏗️ System Architecture](#system-architecture)
+- [🔀 System Workflow](#system-workflow)
 - [⚡ Quick Start](#quick-start)
 - [🔧 Installation & Setup](#installation--setup)
 - [🚀 Usage](#usage)
@@ -41,18 +41,32 @@ This project implements a comprehensive **Anti-Money Laundering (AML) detection 
 - **📊 Real-time Dashboard** - Interactive visualization and reporting
 - **🔗 RESTful API** - Seamless integration capabilities
 
-## 🏗️ System Architecture
+## 🔀 System Workflow
 
 <div align="center">
 
-### System Workflow Diagram
+### Complete System Flowchart
 ![System Flowchart](flowshart.jpg)
 
 </div>
 
-### 🏛️ Architecture Overview
+## ⚡ Quick Start
 
-The system follows a modular microservices architecture:
+### 🚀 Get Started in 5 Minutes
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/YousefAbdalbary/Digitopia_AML_project.git
+cd Digitopia_AML_project
+
+# 2. Install dependencies
+pip install -r requirements.txt
+
+# 3. Train the model
+python model/train_model.py
+
+# 4. Start the services
+python app.py
 
 ## ⚡ Quick Start
 
