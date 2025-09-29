@@ -334,8 +334,7 @@ GATModel(
 
 <div align="center">
 
-### Model Performance Overview
-![Performance Metrics](presentation_metrics_plot.png)
+
 
 ### Competition Evaluation Results
 ![Competition Metrics](aml_competition_metrics.png)
