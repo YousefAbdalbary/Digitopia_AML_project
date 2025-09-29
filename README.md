@@ -1,6 +1,3 @@
-Here's your updated README with the images placed in the correct sections as specified:
-
-```markdown
 # 🚀 AML Detection with Graph Attention Networks
 
 <div align="center">
@@ -70,7 +67,6 @@ python model/train_model.py
 
 # 4. Start the services
 python app.py
-```
 
 ### 📁 Sample Data Structure
 
