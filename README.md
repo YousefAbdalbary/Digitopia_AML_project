@@ -1,4 +1,3 @@
-```markdown
 # 🚀 AML Detection with Graph Attention Networks
 
 <div align="center">
@@ -54,7 +53,6 @@ This project implements a comprehensive **Anti-Money Laundering (AML) detection 
 
 The system follows a modular microservices architecture:
 
-```
 ┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
 │   Frontend      │    │   Flask API      │    │   AI Models     │
 │   Dashboard     │◄──►│   Gateway        │◄──►│   (GAT, ML)     │
