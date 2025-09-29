@@ -1,0 +1,198 @@
+{% extends "base.html" %}
+
+{% block title %}Cash Flow Analysis - AML Detection Platform{% endblock %}
+
+{% block content %}
+<div class="cash-flow-page">
+    <!-- Controls Panel -->
+    <div class="controls-panel">
+        <div class="controls-group">
+            <div class="control-item">
+                <label for="account-filter">Account Filter:</label>
+                <input type="text" id="account-filter" placeholder="Enter account ID..." class="form-input">
+            </div>
+            
+            <div class="control-item">
+                <label for="currency-filter">Currency:</label>
+                <select id="currency-filter" class="form-select">
+                    <option value="all">All Currencies</option>
+                    <option value="USD">USD</option>
+                    <option value="EUR">EUR</option>
+                    <option value="GBP">GBP</option>
+                    <option value="JPY">JPY</option>
+                    <option value="CHF">CHF</option>
+                </select>
+            </div>
+            
+            <div class="control-item">
+                <label for="date-range">Date Range:</label>
+                <select id="date-range" class="form-select">
+                    <option value="7d">Last 7 Days</option>
+                    <option value="30d" selected>Last 30 Days</option>
+                    <option value="90d">Last 90 Days</option>
+                    <option value="custom">Custom Range</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="controls-actions">
+            <button id="apply-filters" class="btn btn-primary">
+                <i class="fas fa-filter"></i> Apply Filters
+            </button>
+            <button id="export-cash-flow" class="btn btn-outline">
+                <i class="fas fa-download"></i> Export
+            </button>
+        </div>
+    </div>
+    
+    <!-- Cash Flow Overview -->
+    <div class="cash-flow-grid">
+        <!-- Currency Overview -->
+        <div class="dashboard-card currency-overview">
+            <div class="card-header">
+                <h2><i class="fas fa-coins"></i> Currency Overview</h2>
+            </div>
+            <div class="card-content">
+                <canvas id="currency-pie-chart"></canvas>
+            </div>
+        </div>
+        
+        <!-- Risk Analysis -->
+        <div class="dashboard-card risk-analysis">
+            <div class="card-header">
+                <h2><i class="fas fa-shield-alt"></i> Risk Analysis</h2>
+            </div>
+            <div class="card-content">
+                <div class="chart-container">
+                    <canvas id="risk-analysis-chart"></canvas>
+                </div>
+                <div id="risk-metrics" class="risk-metrics">
+                    <!-- Risk metrics will be loaded here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Top Flows -->
+        <div class="dashboard-card top-flows">
+            <div class="card-header">
+                <h2><i class="fas fa-arrow-right"></i> Top Cash Flows</h2>
+            </div>
+            <div class="card-content">
+                <div id="top-flows-list" class="flows-list">
+                    <!-- Top flows will be loaded here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Multi-Currency Network -->
+        <div class="dashboard-card network-view wide">
+            <div class="card-header">
+                <h2><i class="fas fa-project-diagram"></i> Multi-Currency Network</h2>
+                <div class="card-controls">
+                    <button id="toggle-currency-edges" class="btn btn-sm btn-outline">
+                        <i class="fas fa-eye"></i> Toggle Currencies
+                    </button>
+                </div>
+            </div>
+            <div class="card-content">
+                <div id="multi-currency-network" class="network-container"></div>
+            </div>
+        </div>
+        
+        <!-- Flow Trends -->
+        <div class="dashboard-card flow-trends wide">
+            <div class="card-header">
+                <h2><i class="fas fa-chart-line"></i> Cash Flow Trends</h2>
+                <div class="card-controls">
+                    <select id="trend-metric" class="control-select">
+                        <option value="volume">Volume</option>
+                        <option value="count">Transaction Count</option>
+                        <option value="risk">Average Risk</option>
+                    </select>
+                </div>
+            </div>
+            <div class="card-content">
+                <canvas id="flow-trends-chart"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Transaction Details Table -->
+    <div class="dashboard-card transactions-table wide">
+        <div class="card-header">
+            <h2><i class="fas fa-table"></i> Transaction Details</h2>
+            <div class="card-controls">
+                <div class="search-box">
+                    <input type="text" id="transaction-search" placeholder="Search transactions..." class="form-input">
+                    <i class="fas fa-search"></i>
+                </div>
+                <select id="table-page-size" class="control-select">
+                    <option value="25">25 per page</option>
+                    <option value="50" selected>50 per page</option>
+                    <option value="100">100 per page</option>
+                </select>
+            </div>
+        </div>
+        <div class="card-content">
+            <div class="table-container">
+                <table id="transactions-table" class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>From Account</th>
+                            <th>To Account</th>
+                            <th>Amount</th>
+                            <th>Currency</th>
+                            <th>Risk Score</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactions-tbody">
+                        <!-- Transaction rows will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="table-pagination">
+                <div class="pagination-info">
+                    <span id="pagination-info">Showing 1-50 of 0 transactions</span>
+                </div>
+                <div class="pagination-controls">
+                    <button id="prev-page" class="btn btn-sm btn-outline" disabled>
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <span id="page-numbers" class="page-numbers">
+                        <!-- Page numbers will be inserted here -->
+                    </span>
+                    <button id="next-page" class="btn btn-sm btn-outline">
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Transaction Detail Modal -->
+<div id="transaction-details-modal" class="modal">
+    <div class="modal-content large">
+        <div class="modal-header">
+            <h2>Transaction Details</h2>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="transaction-details">
+                <!-- Transaction details will be loaded here -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline modal-close">Close</button>
+            <button class="btn btn-primary" id="flag-transaction">Flag as Suspicious</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/cash-flow.js') }}"></script>
+{% endblock %}

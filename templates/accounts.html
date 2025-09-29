@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block title %}Account Analysis - AML Detection Platform{% endblock %}
+
+{% block content %}
+<div class="accounts-page">
+    <!-- Search and Filters -->
+    <div class="search-section">
+        <div class="search-container">
+            <div class="search-box">
+                <input type="text" id="account-search" placeholder="Search by account ID, name, or attributes..." class="form-input">
+                <button id="search-btn" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            
+            <div class="search-filters">
+                <select id="account-type-filter" class="form-select">
+                    <option value="all">All Types</option>
+                    <option value="individual">Individual</option>
+                    <option value="corporate">Corporate</option>
+                    <option value="trust">Trust</option>
+                </select>
+                
+                <select id="risk-level-filter" class="form-select">
+                    <option value="all">All Risk Levels</option>
+                    <option value="high">High Risk</option>
+                    <option value="medium">Medium Risk</option>
+                    <option value="low">Low Risk</option>
+                </select>
+                
+                <select id="country-filter" class="form-select">
+                    <option value="all">All Countries</option>
+                    <option value="US">United States</option>
+                    <option value="GB">United Kingdom</option>
+                    <option value="JP">Japan</option>
+                    <option value="SG">Singapore</option>
+                    <option value="HK">Hong Kong</option>
+                </select>
+                
+                <select id="limit-filter" class="form-select">
+                    <option value="5">Show 5</option>
+                    <option value="10" selected>Show 10</option>
+                    <option value="20">Show 20</option>
+                    <option value="50">Show 50</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Account Details (shown when account is selected) -->
+    <div id="account-details" class="account-details" style="display: none;">
+        <div class="details-grid">
+            <!-- Account Profile -->
+            <div class="dashboard-card account-profile">
+                <div class="card-header">
+                    <h2><i class="fas fa-user"></i> Account Profile</h2>
+                    <div class="card-controls">
+                        <span id="account-risk-badge" class="risk-badge">Low Risk</span>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div id="account-profile-content">
+                        <!-- Account profile content will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Transaction Activity -->
+            <div class="dashboard-card transaction-activity">
+                <div class="card-header">
+                    <h2><i class="fas fa-chart-line"></i> Transaction Activity</h2>
+                </div>
+                <div class="card-content">
+                    <canvas id="activity-chart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Risk Factors -->
+            <div class="dashboard-card risk-factors">
+                <div class="card-header">
+                    <h2><i class="fas fa-shield-alt"></i> Risk Factors</h2>
+                </div>
+                <div class="card-content">
+                    <div id="risk-factors-content">
+                        <!-- Risk factors will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Network Connections -->
+            <div class="dashboard-card network-connections">
+                <div class="card-header">
+                    <h2><i class="fas fa-project-diagram"></i> Network Connections</h2>
+                    <button id="view-full-network" class="btn btn-sm btn-primary">
+                        <i class="fas fa-expand"></i> View Full Network
+                    </button>
+                </div>
+                <div class="card-content">
+                    <div id="connections-preview">
+                        <!-- Network connections preview will be loaded here -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Recent Transactions -->
+            <div class="dashboard-card recent-transactions wide">
+                <div class="card-header">
+                    <h2><i class="fas fa-list"></i> Recent Transactions</h2>
+                    <div class="card-controls">
+                        <select id="transaction-filter" class="control-select">
+                            <option value="all">All Transactions</option>
+                            <option value="sent">Sent Only</option>
+                            <option value="received">Received Only</option>
+                            <option value="high-risk">High Risk Only</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="card-content">
+                    <div class="table-container">
+                        <table id="account-transactions-table" class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Type</th>
+                                    <th>Counterparty</th>
+                                    <th>Amount</th>
+                                    <th>Currency</th>
+                                    <th>Risk Score</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="account-transactions-tbody">
+                                <!-- Transactions will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Peer Comparison -->
+            <div class="dashboard-card peer-comparison">
+                <div class="card-header">
+                    <h2><i class="fas fa-users"></i> Peer Comparison</h2>
+                </div>
+                <div class="card-content">
+                    <canvas id="peer-comparison-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Account Search Results -->
+    <div id="search-results" class="search-results">
+        <div class="dashboard-card">
+            <div class="card-header">
+                <h2><i class="fas fa-search"></i> Search Results</h2>
+                <span id="results-count">0 accounts found</span>
+            </div>
+            <div class="card-content">
+                <div id="accounts-grid" class="accounts-grid">
+                    <!-- Search results will be loaded here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Account Comparison Modal -->
+<div id="comparison-modal" class="modal">
+    <div class="modal-content large">
+        <div class="modal-header">
+            <h2>Account Comparison</h2>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="comparison-content">
+                <!-- Comparison content will be loaded here -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline modal-close">Close</button>
+            <button class="btn btn-primary" id="export-comparison">Export Comparison</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/accounts.js') }}"></script>
+{% endblock %}

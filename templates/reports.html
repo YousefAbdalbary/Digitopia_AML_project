@@ -1,0 +1,226 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - AML Detection Platform{% endblock %}
+
+{% block content %}
+<div class="reports-page">
+    <!-- Report Types -->
+    <div class="report-types-section">
+        <div class="report-types-grid">
+            <div class="report-type-card" data-report="compliance">
+                <div class="report-icon">
+                    <i class="fas fa-gavel"></i>
+                </div>
+                <div class="report-content">
+                    <h3>Compliance Report</h3>
+                    <p>Regulatory compliance and audit trail reports</p>
+                </div>
+            </div>
+            
+            <div class="report-type-card" data-report="risk-analysis">
+                <div class="report-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="report-content">
+                    <h3>Risk Analysis</h3>
+                    <p>Comprehensive risk assessment and trends</p>
+                </div>
+            </div>
+            
+            <div class="report-type-card" data-report="transaction-summary">
+                <div class="report-icon">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="report-content">
+                    <h3>Transaction Summary</h3>
+                    <p>Volume, flow, and pattern analysis</p>
+                </div>
+            </div>
+            
+            <div class="report-type-card" data-report="alerts-summary">
+                <div class="report-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <div class="report-content">
+                    <h3>Alerts Summary</h3>
+                    <p>Alert generation and resolution metrics</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Report Configuration -->
+    <div class="dashboard-card report-config">
+        <div class="card-header">
+            <h2><i class="fas fa-cog"></i> Report Configuration</h2>
+        </div>
+        <div class="card-content">
+            <div class="config-form">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="report-type">Report Type:</label>
+                        <select id="report-type" class="form-select">
+                            <option value="">Select Report Type</option>
+                            <option value="compliance">Compliance Report</option>
+                            <option value="risk-analysis">Risk Analysis</option>
+                            <option value="transaction-summary">Transaction Summary</option>
+                            <option value="alerts-summary">Alerts Summary</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="date-range">Date Range:</label>
+                        <select id="date-range" class="form-select">
+                            <option value="7d">Last 7 Days</option>
+                            <option value="30d" selected>Last 30 Days</option>
+                            <option value="90d">Last 90 Days</option>
+                            <option value="custom">Custom Range</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group custom-date-range" style="display: none;">
+                        <label for="start-date">Start Date:</label>
+                        <input type="date" id="start-date" class="form-input">
+                    </div>
+                    
+                    <div class="form-group custom-date-range" style="display: none;">
+                        <label for="end-date">End Date:</label>
+                        <input type="date" id="end-date" class="form-input">
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="format">Export Format:</label>
+                        <select id="format" class="form-select">
+                            <option value="pdf">PDF</option>
+                            <option value="excel">Excel</option>
+                            <option value="csv">CSV</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="currency-filter">Currency:</label>
+                        <select id="currency-filter" class="form-select">
+                            <option value="all">All Currencies</option>
+                            <option value="USD">USD</option>
+                            <option value="EUR">EUR</option>
+                            <option value="GBP">GBP</option>
+                            <option value="JPY">JPY</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="risk-threshold">Risk Threshold:</label>
+                        <select id="risk-threshold" class="form-select">
+                            <option value="all">All Risk Levels</option>
+                            <option value="0.3">Low Risk (0.3+)</option>
+                            <option value="0.7">High Risk (0.7+)</option>
+                            <option value="0.9">Critical Risk (0.9+)</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button id="generate-report" class="btn btn-primary">
+                        <i class="fas fa-file-alt"></i> Generate Report
+                    </button>
+                    <button id="schedule-report" class="btn btn-outline">
+                        <i class="fas fa-clock"></i> Schedule Report
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Report Preview -->
+    <div id="report-preview" class="dashboard-card" style="display: none;">
+        <div class="card-header">
+            <h2><i class="fas fa-eye"></i> Report Preview</h2>
+            <div class="card-controls">
+                <button id="download-report" class="btn btn-primary">
+                    <i class="fas fa-download"></i> Download
+                </button>
+                <button id="share-report" class="btn btn-outline">
+                    <i class="fas fa-share"></i> Share
+                </button>
+            </div>
+        </div>
+        <div class="card-content">
+            <div id="report-content">
+                <!-- Report content will be generated here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Reports -->
+    <div class="dashboard-card recent-reports">
+        <div class="card-header">
+            <h2><i class="fas fa-history"></i> Recent Reports</h2>
+            <button id="refresh-reports" class="btn btn-sm btn-outline">
+                <i class="fas fa-sync"></i> Refresh
+            </button>
+        </div>
+        <div class="card-content">
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Report Name</th>
+                            <th>Type</th>
+                            <th>Generated Date</th>
+                            <th>Date Range</th>
+                            <th>Format</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recent-reports-tbody">
+                        <!-- Recent reports will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Schedule Report Modal -->
+<div id="schedule-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Schedule Report</h2>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="schedule-form">
+                <div class="form-group">
+                    <label for="schedule-frequency">Frequency:</label>
+                    <select id="schedule-frequency" class="form-select">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                        <option value="quarterly">Quarterly</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="schedule-time">Time:</label>
+                    <input type="time" id="schedule-time" class="form-input" value="09:00">
+                </div>
+                
+                <div class="form-group">
+                    <label for="schedule-recipients">Recipients:</label>
+                    <textarea id="schedule-recipients" class="form-input" rows="3" placeholder="Enter email addresses separated by commas"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline modal-close">Cancel</button>
+            <button class="btn btn-primary" id="save-schedule">Save Schedule</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+{% endblock %}

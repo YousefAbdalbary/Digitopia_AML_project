@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+
+{% block title %}Alerts - AML Detection Platform{% endblock %}
+
+{% block content %}
+<div class="alerts-page">
+    <!-- Alerts Overview -->
+    <div class="alerts-overview">
+        <div class="overview-cards">
+            <div class="overview-card active">
+                <div class="card-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="card-content">
+                    <h3 id="active-alerts">0</h3>
+                    <p>Active Alerts</p>
+                </div>
+            </div>
+            
+            <div class="overview-card high-priority">
+                <div class="card-icon">
+                    <i class="fas fa-fire"></i>
+                </div>
+                <div class="card-content">
+                    <h3 id="high-priority-alerts">0</h3>
+                    <p>High Priority</p>
+                </div>
+            </div>
+            
+            <div class="overview-card resolved">
+                <div class="card-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="card-content">
+                    <h3 id="resolved-alerts">0</h3>
+                    <p>Resolved Today</p>
+                </div>
+            </div>
+            
+            <div class="overview-card avg-response">
+                <div class="card-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="card-content">
+                    <h3 id="avg-response-time">0h</h3>
+                    <p>Avg Response Time</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Alerts Filters -->
+    <div class="alerts-filters">
+        <div class="filter-group">
+            <select id="status-filter" name="status" class="form-select">
+                <option value="all">All Status</option>
+                <option value="active" selected>Active</option>
+                <option value="investigating">Investigating</option>
+                <option value="resolved">Resolved</option>
+                <option value="dismissed">Dismissed</option>
+            </select>
+            
+            <select id="priority-filter" name="priority" class="form-select">
+                <option value="all">All Priorities</option>
+                <option value="high">High Priority</option>
+                <option value="medium">Medium Priority</option>
+                <option value="low">Low Priority</option>
+            </select>
+            
+            <select id="type-filter" name="type" class="form-select">
+                <option value="all">All Types</option>
+                <option value="suspicious_transaction">Suspicious Transaction</option>
+                <option value="high_amount">High Amount</option>
+                <option value="unusual_pattern">Unusual Pattern</option>
+                <option value="structuring">Structuring</option>
+            </select>
+            
+            <input type="date" id="date-filter" name="date" class="form-input">
+            
+            <div class="search-group">
+                <input type="text" id="search-input" name="search" class="form-input" placeholder="Search alerts...">
+                <button id="search-button" class="btn btn-outline">
+                    <i class="fas fa-search"></i> Search
+                </button>
+            </div>
+        </div>
+        
+        <div class="filter-actions">
+            <button id="apply-filters" class="btn btn-primary" data-action="apply-filters">
+                <i class="fas fa-filter"></i> Apply Filters
+            </button>
+            <button id="clear-filters" class="btn btn-outline" data-action="clear-filters">
+                <i class="fas fa-times"></i> Clear
+            </button>
+            <button id="export-alerts" class="btn btn-outline" data-action="export">
+                <i class="fas fa-download"></i> Export
+            </button>
+        </div>
+    </div>
+    
+    <!-- Alerts List -->
+    <div class="dashboard-card alerts-list-card">
+        <div class="card-header">
+            <h2><i class="fas fa-bell"></i> Alerts</h2>
+            <div class="card-controls">
+                <button id="refresh-alerts" class="btn btn-sm btn-outline" data-action="refresh">
+                    <i class="fas fa-sync"></i> Refresh
+                </button>
+                <button id="mark-all-read" class="btn btn-sm btn-outline" data-action="mark-all-read">
+                    <i class="fas fa-check"></i> Mark All Read
+                </button>
+            </div>
+        </div>
+        <div class="card-content">
+            <div id="alerts-container" class="alerts-container">
+                <!-- Alerts will be loaded here -->
+            </div>
+            
+            <div class="alerts-pagination">
+                <button id="load-more" class="btn btn-outline" data-action="load-more">
+                    <i class="fas fa-plus"></i> Load More Alerts
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Alert Detail Modal -->
+<div id="alert-modal" class="modal">
+    <div class="modal-content large">
+        <div class="modal-header">
+            <h2>Alert Details</h2>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="alert-details">
+                <!-- Alert details will be loaded here -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline modal-close">Close</button>
+            <button class="btn btn-success" id="resolve-alert">Resolve Alert</button>
+            <button class="btn btn-warning" id="investigate-alert">Start Investigation</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/alerts.js') }}"></script>
+{% endblock %}

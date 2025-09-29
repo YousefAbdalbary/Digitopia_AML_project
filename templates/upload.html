@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Dataset - AML Detection Platform{% endblock %}
+
+{% block content %}
+<div class="upload-page">
+    <div class="upload-container">
+        <!-- Upload Section -->
+        <div class="dashboard-card upload-card">
+            <div class="card-header">
+                <h2><i class="fas fa-cloud-upload-alt"></i> Upload Transaction Dataset</h2>
+            </div>
+            <div class="card-content">
+                <div class="upload-zone" id="upload-zone">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">
+                        <h3>Drag and drop your file here</h3>
+                        <p>or <span class="upload-link" id="browse-files">browse files</span></p>
+                        <small>Supported formats: CSV, XLSX, XLS (Max 16MB)</small>
+                    </div>
+                    <input type="file" id="file-input" accept=".csv,.xlsx,.xls" style="display: none;">
+                </div>
+                
+                <div class="file-info" id="file-info" style="display: none;">
+                    <div class="file-details">
+                        <div class="file-icon">
+                            <i class="fas fa-file"></i>
+                        </div>
+                        <div class="file-meta">
+                            <div class="file-name" id="file-name"></div>
+                            <div class="file-size" id="file-size"></div>
+                        </div>
+                        <button class="remove-file" id="remove-file">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="upload-progress" id="upload-progress" style="display: none;">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                        <div class="progress-text" id="progress-text">0%</div>
+                    </div>
+                </div>
+                
+                <div class="upload-actions">
+                    <button id="upload-btn" class="btn btn-primary" disabled>
+                        <i class="fas fa-upload"></i> Upload Dataset
+                    </button>
+                    <button id="validate-btn" class="btn btn-outline" disabled>
+                        <i class="fas fa-check-circle"></i> Validate Format
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Data Format Guide -->
+        <div class="dashboard-card format-guide">
+            <div class="card-header">
+                <h2><i class="fas fa-info-circle"></i> Required Data Format</h2>
+            </div>
+            <div class="card-content">
+                <div class="format-table">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Column Name</th>
+                                <th>Data Type</th>
+                                <th>Description</th>
+                                <th>Example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>Timestamp</code></td>
+                                <td>DateTime</td>
+                                <td>Transaction date and time</td>
+                                <td>2024-01-15 14:30:00</td>
+                            </tr>
+                            <tr>
+                                <td><code>From Bank</code></td>
+                                <td>Numeric</td>
+                                <td>Originating bank code</td>
+                                <td>12345</td>
+                            </tr>
+                            <tr>
+                                <td><code>From Account</code></td>
+                                <td>Text</td>
+                                <td>Originating account ID</td>
+                                <td>ABC123DEF456</td>
+                            </tr>
+                            <tr>
+                                <td><code>To Bank</code></td>
+                                <td>Numeric</td>
+                                <td>Destination bank code</td>
+                                <td>67890</td>
+                            </tr>
+                            <tr>
+                                <td><code>To Account</code></td>
+                                <td>Text</td>
+                                <td>Destination account ID</td>
+                                <td>XYZ789GHI012</td>
+                            </tr>
+                            <tr>
+                                <td><code>Amount Received</code></td>
+                                <td>Numeric</td>
+                                <td>Amount received in destination currency</td>
+                                <td>1500.00</td>
+                            </tr>
+                            <tr>
+                                <td><code>Receiving Currency</code></td>
+                                <td>Text</td>
+                                <td>Currency code for received amount</td>
+                                <td>USD</td>
+                            </tr>
+                            <tr>
+                                <td><code>Amount Paid</code></td>
+                                <td>Numeric</td>
+                                <td>Amount paid in source currency</td>
+                                <td>1250.00</td>
+                            </tr>
+                            <tr>
+                                <td><code>Payment Currency</code></td>
+                                <td>Text</td>
+                                <td>Currency code for paid amount</td>
+                                <td>EUR</td>
+                            </tr>
+                            <tr>
+                                <td><code>Payment Format</code></td>
+                                <td>Text</td>
+                                <td>Payment method used</td>
+                                <td>wire, ACH, check, etc.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="format-notes">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Important Notes</h4>
+                    <ul>
+                        <li>All column names must match exactly (case-sensitive)</li>
+                        <li>Date format should be YYYY-MM-DD HH:MM:SS</li>
+                        <li>Currency codes should be 3-letter ISO codes (USD, EUR, etc.)</li>
+                        <li>Account IDs can be alphanumeric</li>
+                        <li>Empty cells will be treated as missing data</li>
+                        <li>Maximum file size: 16MB</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Upload History -->
+    <div class="dashboard-card upload-history wide">
+        <div class="card-header">
+            <h2><i class="fas fa-history"></i> Upload History</h2>
+            <button id="refresh-history" class="btn btn-sm btn-outline">
+                <i class="fas fa-sync"></i> Refresh
+            </button>
+        </div>
+        <div class="card-content">
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Upload Date</th>
+                            <th>Filename</th>
+                            <th>Records Processed</th>
+                            <th>Suspicious Found</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="upload-history-tbody">
+                        <!-- Upload history will be loaded here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Upload Result Modal -->
+<div id="result-modal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>Upload Results</h2>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div id="upload-results">
+                <!-- Upload results will be displayed here -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline modal-close">Close</button>
+            <button class="btn btn-primary" id="view-transactions">View Transactions</button>
+        </div>
+    </div>
+</div>
+
+<!-- Sample Data Modal -->
+<div id="sample-modal" class="modal">
+    <div class="modal-content large">
+        <div class="modal-header">
+            <h2>Sample Data Template</h2>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="modal-body">
+            <p>Download this sample CSV template to understand the required format:</p>
+            <div class="sample-preview">
+                <pre id="sample-data"></pre>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-outline modal-close">Close</button>
+            <button class="btn btn-primary" id="download-sample">Download Template</button>
+        </div>
+    </div>
+</div>
+
+<!-- Quick Actions -->
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/upload.js') }}"></script>
+{% endblock %}

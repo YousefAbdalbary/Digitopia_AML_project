@@ -1,0 +1,242 @@
+{% extends "base.html" %}
+
+{% block title %}Network Analysis - AML Detection Platform{% endblock %}
+
+{% block content %}
+<div class="network-page">
+    <!-- Controls Panel -->
+    <div class="controls-panel">
+        <div class="controls-group">
+            <div class="control-item">
+                <label for="focus-account">Focus Account:</label>
+                <input type="text" id="focus-account" placeholder="Enter account ID..." class="form-input">
+                <button id="search-account" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            
+            <div class="control-item">
+                <label for="network-depth">Network Depth:</label>
+                <select id="network-depth" class="form-select">
+                    <option value="1">1 Level</option>
+                    <option value="2" selected>2 Levels</option>
+                    <option value="3">3 Levels</option>
+                </select>
+            </div>
+            
+            <div class="control-item">
+                <label for="min-amount">Min Amount:</label>
+                <input type="number" id="min-amount" value="1000" min="0" class="form-input">
+            </div>
+            
+            <div class="control-item">
+                <label for="risk-filter">Risk Level:</label>
+                <select id="risk-filter" class="form-select">
+                    <option value="all">All Levels</option>
+                    <option value="high">High Risk Only</option>
+                    <option value="medium">Medium Risk Only</option>
+                    <option value="low">Low Risk Only</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="controls-actions">
+            <button id="refresh-network" class="btn btn-primary">
+                <i class="fas fa-sync"></i> Refresh
+            </button>
+            <button id="export-network" class="btn btn-outline">
+                <i class="fas fa-download"></i> Export
+            </button>
+            <button id="analyze-patterns" class="btn btn-success">
+                <i class="fas fa-brain"></i> Analyze Patterns
+            </button>
+        </div>
+    </div>
+    
+    <!-- Network Visualization -->
+    <div class="network-container">
+        <div class="network-sidebar">
+            <div class="sidebar-section">
+                <h3><i class="fas fa-info-circle"></i> Network Stats</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <span class="stat-label">Nodes:</span>
+                        <span class="stat-value" id="node-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Edges:</span>
+                        <span class="stat-value" id="edge-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">Transactions:</span>
+                        <span class="stat-value" id="transaction-count">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">High Risk:</span>
+                        <span class="stat-value high-risk" id="high-risk-count">0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3><i class="fas fa-search"></i> Detected Patterns</h3>
+                <div id="detected-patterns" class="patterns-list">
+                    <!-- Patterns will be loaded here -->
+                </div>
+            </div>
+            
+            <div class="sidebar-section">
+                <h3><i class="fas fa-cog"></i> Visualization</h3>
+                <div class="viz-controls">
+                    <div class="control-group">
+                        <label>Layout:</label>
+                        <select id="layout-type" class="form-select">
+                            <option value="force">Force-Directed</option>
+                            <option value="circular">Circular</option>
+                            <option value="hierarchical">Hierarchical</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Node Size:</label>
+                        <select id="node-size-metric" class="form-select">
+                            <option value="transaction_count">Transaction Count</option>
+                            <option value="total_amount">Total Amount</option>
+                            <option value="risk_score">Risk Score</option>
+                        </select>
+                    </div>
+                    
+                    <div class="control-group">
+                        <label>Edge Width:</label>
+                        <select id="edge-width-metric" class="form-select">
+                            <option value="total_amount" selected>Total Amount</option>
+                            <option value="transaction_count">Transaction Count</option>
+                            <option value="risk_score">Risk Score</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="network-main">
+            <!-- Toggle between D3 Network and World Map -->
+            <div class="network-view-controls">
+                <button id="toggle-d3-view" class="btn btn-primary active">D3 Network</button>
+                <button id="toggle-map-view" class="btn btn-outline-primary">World Map</button>
+            </div>
+            
+            <!-- D3 Network Graph -->
+            <div id="network-graph" class="network-graph" style="display: block;"></div>
+            
+            <!-- Leaflet World Map -->
+            <div id="network-world-map" class="network-world-map" style="display: none; height: 600px; width: 100%;"></div>
+            
+            <!-- Network Legend -->
+            <div class="network-legend">
+                <h4>Legend</h4>
+                <div class="legend-items">
+                    <div class="legend-item">
+                        <div class="node-sample high-risk"></div>
+                        <span>High Risk Account</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="node-sample medium-risk"></div>
+                        <span>Medium Risk Account</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="node-sample low-risk"></div>
+                        <span>Low Risk Account</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="node-sample focus"></div>
+                        <span>Focus Account</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="edge-sample high-risk"></div>
+                        <span>High Risk Transaction</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="edge-sample normal"></div>
+                        <span>Normal Transaction</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Node Details Panel -->
+    <div id="node-details-panel" class="details-panel">
+        <div class="panel-header">
+            <h3>Account Details</h3>
+            <button id="close-details" class="btn btn-sm btn-outline">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="panel-content">
+            <div id="node-details-content">
+                <!-- Node details will be loaded here -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- Edge Details Panel -->
+    <div id="edge-details-panel" class="details-panel">
+        <div class="panel-header">
+            <h3>Transaction Details</h3>
+            <button id="close-edge-details" class="btn btn-sm btn-outline">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="panel-content">
+            <div id="edge-details-content">
+                <!-- Edge details will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Pattern Analysis Modal -->
+<div id="pattern-modal" class="modal fade" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Pattern Analysis Results</h2>
+        <button class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="pattern-results"></div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" data-bs-dismiss="modal">Close</button>
+        <button class="btn btn-primary" id="export-patterns">Export Results</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script src="{{ url_for('static', filename='js/network.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Check if we have a transaction ID from URL parameter
+    {% if transaction_id %}
+    const transactionId = '{{ transaction_id }}';
+    console.log('Highlighting transaction:', transactionId);
+    
+    // Wait for network to load then highlight transaction
+    function waitForNetworkAndHighlight() {
+        if (window.networkAnalysis && window.networkAnalysis.nodes && window.networkAnalysis.nodes.length > 0) {
+            window.networkAnalysis.highlightTransaction(transactionId);
+        } else {
+            setTimeout(waitForNetworkAndHighlight, 500);
+        }
+    }
+    
+    // Start checking after a short delay
+    setTimeout(waitForNetworkAndHighlight, 1000);
+    {% endif %}
+});
+</script>
+{% endblock %}
