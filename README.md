@@ -440,7 +440,7 @@ This project is developed for the Digitopia competition and is licensed under th
 
 **Built with ❤️ for the Digitopia Competition**
 
-*Last Updated: September 29, 2025*
+
 
 </div>
 ```
